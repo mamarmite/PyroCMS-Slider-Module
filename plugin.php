@@ -18,19 +18,43 @@ class Plugin_Slider extends Plugin
 
 	public function images()
 	{
-		$limit = $this->attribute('limit', 5);
-		$where = $this->attribute('where', NULL);
+		// Variables
+		$limit     = (int)$this->attribute('limit', 15);
+		$where     = $this->attribute('where', NULL);
+		$random    = (bool)$this->attribute('random', FALSE);
+		$cache_key = md5('slider');
 
-		// Display a list of images
-		$params = array(
-			'stream' => 'slider',
-			'namespace' => 'slider',
-			'order_by' => 'ordering_count',
-			'limit' => $limit,
-			'where' => $where
-		);
+		// Get from cache
+		if( ! $data = $this->cache->get($cache_key) )
+		{
 
-		$data = $this->streams->entries->get_entries($params);
+			// Display a list of images
+			$params = array(
+				'stream'    => 'slider',
+				'namespace' => 'slider',
+				'order_by'  => 'ordering_count',
+				'limit'     => '15',
+				'where'     => "status = 'live'"
+			);
+
+			// Get results			
+			$data = $this->streams->entries->get_entries($params);
+
+			// Cache
+			$this->cache->save($cache_key, $data, 67400);
+		}
+
+		// Randomise
+		if( $random )
+		{
+			shuffle($data['entries']);
+		}
+
+		// Limit
+		if( count($data['entries']) > $limit )
+		{
+			$data['entries'] = array_slice($data['entries'], 0, $limit);
+		}
 
 		return $data['entries'];
 	}

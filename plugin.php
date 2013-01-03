@@ -14,6 +14,7 @@ class Plugin_Slider extends Plugin
 	{
 		// Load the streams driver
 		$this->load->driver('Streams');
+		$this->load->driver('cache', array('adapter' => 'file'));
 	}
 
 	public function images()

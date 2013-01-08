@@ -4,5 +4,5 @@
 
 .images div.clear { background-color: transparent; margin: 0 3px 4px 0; padding: 0; border: 0; float: none; width: auto; height: auto; }
 
-.images .slider_image { position: relative; padding-bottom: 40px; }
+.images .slider_image { position: relative; padding-bottom: 40px; cursor: move; }
 .images .slider_image span .buttons { position: absolute; bottom: 0px; padding: 5px 0px; margin: 0px; border: none; }

@@ -23,7 +23,7 @@ class Plugin_Slider extends Plugin
 		$limit     = (int)$this->attribute('limit', 15);
 		$where     = $this->attribute('where', NULL);
 		$random    = (bool)$this->attribute('random', FALSE);
-		$cache_key = md5('slider');
+		$cache_key = md5('slider_'.serialize($this->attributes()));
 
 		// Get from cache
 		if( ! $data = $this->cache->get($cache_key) )
@@ -34,7 +34,6 @@ class Plugin_Slider extends Plugin
 				'stream'    => 'slider',
 				'namespace' => 'slider',
 				'order_by'  => 'ordering_count',
-				'limit'     => '15',
 				'where'     => "status = 'live'"
 			);
 

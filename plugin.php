@@ -34,6 +34,7 @@ class Plugin_Slider extends Plugin
 				'stream'    => 'slider',
 				'namespace' => 'slider',
 				'order_by'  => 'ordering_count',
+				'sort'	    => 'asc',
 				'where'     => "status = 'live'"
 			);
 

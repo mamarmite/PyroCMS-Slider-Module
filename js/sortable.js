@@ -22,4 +22,12 @@ $(function()
 	});
 	
 	$(".images").disableSelection();
+
+	//set all heights to be equal to the largest height (re-usable)
+	$.fn.setAllToMaxHeight = function(){
+		return this.height( Math.max.apply(this, $.map( this , function(e){ return $(e).height() }) ) );
+	}
+	// usage: $(‘div.unevenheights’).setAllToMaxHeight()
+	$('.slider_image').setAllToMaxHeight();
+
 });

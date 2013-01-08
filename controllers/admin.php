@@ -27,9 +27,10 @@ class Admin extends Admin_Controller
 	{
 		// Display a list of articles
 		$params = array(
-			'stream' => 'slider',
+			'stream'    => 'slider',
 			'namespace' => 'slider',
-			'order_by' => 'ordering_count'
+			'order_by'  => 'ordering_count',
+			'sort'      => 'asc'
 		);
 
 		$data['entries'] = $this->streams->entries->get_entries($params);
@@ -58,6 +59,42 @@ class Admin extends Admin_Controller
  		);
 
  		$this->streams->cp->entry_form('slider', 'slider', 'edit', $id, TRUE, $extra);
+	}
+
+	public function live($id)
+	{
+		$id = (int)$id;
+
+		$update = $this->db->update('slider', array('status' => 'live'), array('id' => $id));
+
+ 		if ($update)
+ 		{
+ 			$this->session->set_flashdata('success', 'Image successfully set to live');
+ 		}
+ 		else
+ 		{
+ 			$this->session->set_flashdata('error', 'Unable to set the image to live');
+ 		}
+
+ 		redirect('admin/slider');
+	}
+
+	public function draft($id)
+	{
+		$id = (int)$id;
+
+		$update = $this->db->update('slider', array('status' => 'draft'), array('id' => $id));
+
+ 		if ($update)
+ 		{
+ 			$this->session->set_flashdata('success', 'Image successfully set to draft');
+ 		}
+ 		else
+ 		{
+ 			$this->session->set_flashdata('error', 'Unable to set the image to draft');
+ 		}
+
+ 		redirect('admin/slider');
 	}
 
 	public function delete($id)

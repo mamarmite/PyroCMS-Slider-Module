@@ -5,7 +5,7 @@ $(function()
 		stop: function(event, ui) {
 			var order = '';
 
-			$('.ui-sortable div').each(function()
+			$('.ui-sortable div.slider_image').each(function()
 			{
 				order = order + ',' + $(this).attr('id');
 			});

@@ -21,6 +21,9 @@ class Admin extends Admin_Controller
 
 		// Load the language file
 		$this->lang->load('slider');
+
+		// Load the cache
+		$this->load->driver('cache', array('adapter' => 'file'));
 	}
 
 	public function index()
@@ -42,6 +45,8 @@ class Admin extends Admin_Controller
 
 	public function create()
 	{
+		$this->cache->delete('slider');
+
 		$extra = array(
 			'return'			=> 'admin/slider',
 			'success_message'	=> lang('slider:create:success'),
@@ -54,6 +59,8 @@ class Admin extends Admin_Controller
 
 	public function edit($id)
 	{
+		$this->cache->delete('slider');
+
 		$extra = array(
  			'return' => site_url('admin/slider')
  		);
@@ -69,6 +76,7 @@ class Admin extends Admin_Controller
 
  		if ($update)
  		{
+ 			$this->cache->delete('slider');
  			$this->session->set_flashdata('success', 'Image successfully set to live');
  		}
  		else
@@ -87,6 +95,7 @@ class Admin extends Admin_Controller
 
  		if ($update)
  		{
+ 			$this->cache->delete('slider');
  			$this->session->set_flashdata('success', 'Image successfully set to draft');
  		}
  		else
@@ -105,6 +114,7 @@ class Admin extends Admin_Controller
 
  		if ($delete)
  		{
+ 			$this->cache->delete('slider');
  			$this->session->set_flashdata('success', 'Image deleted successfully');
  		}
  		else
@@ -140,6 +150,7 @@ class Admin extends Admin_Controller
  			}
  			else
  			{
+ 				$this->cache->delete('slider');
  				set_status_header(200);
  			}
  		}

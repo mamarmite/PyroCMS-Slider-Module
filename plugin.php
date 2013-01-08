@@ -23,7 +23,7 @@ class Plugin_Slider extends Plugin
 		$limit     = (int)$this->attribute('limit', 15);
 		$where     = $this->attribute('where', NULL);
 		$random    = (bool)$this->attribute('random', FALSE);
-		$cache_key = md5('slider_'.serialize($this->attributes()));
+		$cache_key = 'slider';
 
 		// Get from cache
 		if( ! $data = $this->cache->get($cache_key) )

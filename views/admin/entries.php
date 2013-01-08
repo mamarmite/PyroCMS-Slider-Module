@@ -7,10 +7,19 @@
 			<div class="images">
 				<?php $i = 1; ?>
 				<?php foreach ($entries['entries'] as $entry): ?>
-					<div id="<?php echo $entry['id']; ?>">
+					<div class="slider_image" id="<?php echo $entry['id']; ?>">
 						<img src="<?php echo site_url('files/thumb/'.$entry['image']['id'].'/300/77/fit'); ?>" width="300" height="77">
 						<span>
-							<div class="clear"><?php echo $entry['title']; ?></div class="clear">
+							<div class="clear"><?php echo $entry['title']; ?></div>
+							<?php if ($entry['status']['key'] == 'live'): ?>
+								<a class="btn green confirm" title="Are you sure you want to set this image to draft? It will no longer appear on the site!" href="<?php echo site_url('admin/slider/draft/'.$entry['id']); ?>">
+									<span>Live</span>
+								</a>
+							<?php else: ?>
+								<a class="btn orange confirm" title="Are you sure you want to set this image to live? It will be visible on the site!" href="<?php echo site_url('admin/slider/live/'.$entry['id']); ?>">
+									<span>Draft</span>
+								</a>
+							<?php endif; ?>
 							<a class="btn blue" href="<?php echo site_url('admin/slider/edit/'.$entry['id']); ?>">
 								<span>Edit</span>
 							</a>

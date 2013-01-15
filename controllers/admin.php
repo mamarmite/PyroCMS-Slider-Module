@@ -45,7 +45,7 @@ class Admin extends Admin_Controller
 
 	public function create()
 	{
-		$this->cache->delete('slider');
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . 'slider'));
 
 		$extra = array(
 			'return'			=> 'admin/slider',
@@ -59,7 +59,7 @@ class Admin extends Admin_Controller
 
 	public function edit($id)
 	{
-		$this->cache->delete('slider');
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . 'slider'));
 
 		$extra = array(
  			'return' => site_url('admin/slider')
@@ -76,7 +76,7 @@ class Admin extends Admin_Controller
 
  		if ($update)
  		{
- 			$this->cache->delete('slider');
+ 			$this->cache->delete(md5(BASE_URL . 'slider'));
  			$this->session->set_flashdata('success', 'Image successfully set to live');
  		}
  		else
@@ -95,7 +95,7 @@ class Admin extends Admin_Controller
 
  		if ($update)
  		{
- 			$this->cache->delete('slider');
+ 			$this->cache->delete(md5(BASE_URL . 'slider'));
  			$this->session->set_flashdata('success', 'Image successfully set to draft');
  		}
  		else
@@ -114,7 +114,7 @@ class Admin extends Admin_Controller
 
  		if ($delete)
  		{
- 			$this->cache->delete('slider');
+ 			$this->cache->delete(md5(BASE_URL . 'slider'));
  			$this->session->set_flashdata('success', 'Image deleted successfully');
  		}
  		else
@@ -150,7 +150,7 @@ class Admin extends Admin_Controller
  			}
  			else
  			{
- 				$this->cache->delete('slider');
+ 				$this->cache->delete(md5(BASE_URL . 'slider'));
  				set_status_header(200);
  			}
  		}

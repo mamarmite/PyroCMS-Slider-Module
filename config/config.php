@@ -9,6 +9,4 @@
  *
  */
 
-$config['image_width'] = 940;
-$config['image_height'] = 240;
 $config['image_extensions'] = 'jpg|png'; // Pipe seperated

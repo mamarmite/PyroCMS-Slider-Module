@@ -108,8 +108,6 @@ class Module_Slider extends Module
 				'type'          => 'image',
 				'extra'			=> array(
 					'folder'		=> $folder['data']['id'],
-					'resize_width'	=> $this->config->item('image_width'),
-					'resize_height'	=> $this->config->item('image_height'),
 					'allowed_types'	=> $this->config->item('image_extensions')
 				),
 				'assign'        => 'slider',

@@ -93,26 +93,6 @@ class Module_Slider extends Module
 				'required'      => TRUE
 			),
 			array(
-				'name'          => 'Button Title',
-				'slug'          => 'button_title',
-				'namespace'     => 'slider',
-				'type'          => 'text',
-				'instructions'	=> 'The text that appears on the button link',
-				'extra'         => array(
-					'max_length' => 30
-				),
-				'assign'        => 'slider',
-				'required'      => TRUE
-			),
-			array(
-				'name'          => 'Button Link',
-				'slug'          => 'button_link',
-				'namespace'     => 'slider',
-				'type'          => 'url',
-				'assign'        => 'slider',
-				'required'      => TRUE
-			),
-			array(
 				'name'          => 'Image',
 				'slug'          => 'image',
 				'namespace'     => 'slider',

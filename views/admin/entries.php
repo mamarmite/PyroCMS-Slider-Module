@@ -4,7 +4,7 @@
 
 	<section class="item">
 		<?php if (isset($entries['entries']) AND ! empty($entries['entries'])): ?>
-			<div class="images">
+			<div class="content images">
 				<?php $i = 1; ?>
 				<?php foreach ($entries['entries'] as $entry): ?>
 					<div class="slider_image" id="<?php echo $entry['id']; ?>">

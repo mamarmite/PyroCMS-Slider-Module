@@ -8,6 +8,7 @@
 				<?php $i = 1; ?>
 				<?php foreach ($entries['entries'] as $entry): ?>
 					<div class="slider_image" id="<?php echo $entry['id']; ?>">
+
 						<img src="<?php echo site_url('files/thumb/'.$entry['image']['id'].'/200'); ?>">
 						<span>
 							<div class="clear"><?php echo $entry['title']; ?></div>

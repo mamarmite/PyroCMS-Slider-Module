@@ -125,6 +125,53 @@ class Admin extends Admin_Controller
  		redirect('admin/slider');
 	}
 
+	public function fields($action = null, $field = null)
+	{
+		if ($action == null) {
+
+			$this->streams->cp->assignments_table('slider', 'slider', null, null, true, array(
+				'title'   => 'Slider Fields',
+				'buttons' => array(
+					array(
+						'label' => 'Edit',
+						'url'   => "admin/slider/fields/edit/-assign_id-"
+					),
+					array(
+						'label'   => 'Delete',
+						'url'     => "admin/slider/fields/delete/-assign_id-",
+						'confirm' => true
+					)
+				)
+			));
+
+		} elseif (($action == 'edit' and $field) or $action == 'new') {
+
+			$this->streams->cp->field_form('slider', 'slider', $action, 'admin/slider/fields', $field, array(), true, array(
+				'title'   => 'Edit Field',
+			));
+
+		} elseif ($action == 'delete' and $field) {
+
+			$query = $this->db->select('data_fields.field_slug')
+				->join('data_fields', 'data_field_assignments.field_id = data_fields.id')
+				->where('data_field_assignments.id', $field)
+				->get('data_field_assignments');
+
+			if ( ! $query->num_rows()) show_404();
+
+			$this->streams->fields->delete_field($query->row()->field_slug, 'slider');
+
+			$this->session->set_flashdata('success', 'Field deleted successfully');
+
+			redirect('admin/slider/fields');
+
+		} else {
+
+			show_404();
+
+		}
+	}
+
 	public function reorder()
 	{
 		if ($this->input->is_ajax_request())

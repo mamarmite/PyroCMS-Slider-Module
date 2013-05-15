@@ -22,7 +22,7 @@ class Module_Slider extends Module
 
 	public function info()
 	{
-		return array(
+		$info = array(
 			'name' => array(
 				'en' => 'Slider'
 			),
@@ -37,15 +37,26 @@ class Module_Slider extends Module
 					'name'	=> 'slider:sections:images',
 					'uri'	=> 'admin/slider',
 					'shortcuts' => array(
-						array(
+						1 => array(
 					 	   'name' => 'slider:shortcuts:create',
 						   'uri' => 'admin/slider/create',
 						   'class' => 'add'
-						)
+						),
 					)
 				)
 			),
 		);
+
+		if (group_has_role('slider', 'fields')) {
+			$info['sections']['images']['shortcuts'][0] = array(
+				'name' => 'slider:shortcuts:fields',
+				'uri' => 'admin/slider/fields'
+			);
+
+			ksort($info['sections']['images']['shortcuts']);
+		}
+
+		return $info;
 	}
 
 	public function install()

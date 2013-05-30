@@ -11,8 +11,9 @@
 
 $lang['slider:sections:images'] = 'Slider';
 
-$lang['slider:shortcuts:create'] = 'Add Image';
-$lang['slider:shortcuts:fields'] = 'Fields';
+$lang['slider:shortcuts:create']    = 'Add Image';
+$lang['slider:shortcuts:fields']    = 'Fields';
+$lang['slider:shortcuts:add_field'] = 'Add Field';
 
 $lang['slider:label:none'] = 'There are currently no images in the slider';
 

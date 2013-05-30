@@ -152,7 +152,7 @@ class Module_Slider extends Module
 	{
 		return "
 			<h4>Slider</h4>
-			<p>For help with this module, please contact <a href='mailto:chris.harvey@ne-web.com?subject=Slider Module'>chris.harvey@ne-web.com</a></p>
+			<p>For help with this module, please contact <a href='mailto:chris@chrisnharvey.com?subject=Slider Module'>chris@chrisnharvey.com</a></p>
 		";
 	}
 }

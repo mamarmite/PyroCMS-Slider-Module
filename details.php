@@ -55,6 +55,16 @@ class Module_Slider extends Module
 
 			ksort($info['sections']['images']['shortcuts']);
 		}
+		
+		if ($this->uri->segment(3) == 'fields') {
+			$info['sections']['images']['shortcuts'] = array(
+				array(
+					'name'  => 'slider:shortcuts:add_field',
+					'uri'   => 'admin/slider/fields/new',
+					'class' => 'add'
+				)
+			);
+		}
 
 		return $info;
 	}

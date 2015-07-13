@@ -81,23 +81,31 @@ class Module_Slider extends Module
 		if (group_has_role('slider', 'slide_fields')) {
 			$info['sections']['slides']['shortcuts'][0] = array(
 				'name' => 'slider:shortcuts:fields',
-				'uri' => 'admin/slider/fields',
+				'uri' => 'admin/slider/slides/fields',
 				'class' => 'add'
 			);
 
 			ksort($info['sections']['slides']['shortcuts']);
 		}
 		
-		/*if ($this->uri->segment(3) == 'fields') {
-			$info['sections']['images']['shortcuts'] = array(
+		if ($this->uri->segment(3) == 'fields') {
+			$info['sections']['sliders']['shortcuts'] = array(
 				array(
 					'name'  => 'slider:shortcuts:add_field',
 					'uri'   => 'admin/slider/fields/new',
 					'class' => 'add'
 				)
 			);
-		}*/
-
+		}
+		if ($this->uri->segment(3) == 'slides' && $this->uri->segment(4) == 'fields') {
+			$info['sections']['slides']['shortcuts'] = array(
+				array(
+					'name'  => 'slider:shortcuts:add_field',
+					'uri'   => 'admin/slider/slides/fields/new',
+					'class' => 'add'
+				)
+			);
+		}
 		return $info;
 	}
 

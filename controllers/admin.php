@@ -6,6 +6,8 @@
  * @subpackage	Slider Module
  * @author		Chris Harvey
  * @link 		http://www.chrisnharvey.com/
+ * @author		Marc-André Martin
+ * @link 		http://www.mamarmite.com
  *
  */
 class Admin extends Admin_Controller
@@ -30,22 +32,13 @@ class Admin extends Admin_Controller
 		$this->load->driver('cache', array('adapter' => 'file'));
 	}
 
+	/**
+	 * Index
+	 * Show all the sliders active.
+	 * CP entries table
+	 */
 	public function index()
 	{
-		// Display a list of articles
-		/*$params = array(
-			'stream'    => $this->current_namespace,
-			'namespace' => $this->current_streamname,
-			'order_by'  => 'ordering_count',
-			'sort'      => 'asc'
-		);*/
-
-		//$data['entries'] = $this->streams->entries->get_entries($params);
-
-		/*$this->template->append_css('module::sortable.css')
-					   ->append_js('module::sortable.js')
-					   ->build('admin/sliders_entries', $data);*/
-
 		$extra = array(
 			'return'			=> 'admin/slider',
 			'success_message'	=> lang('slider:create:success'),
@@ -62,9 +55,13 @@ class Admin extends Admin_Controller
 		$this->streams->cp->entries_table($this->current_streamname, $this->current_namespace, 20, "page/", true, $extra);
 	}
 
+	/**
+	 * Create a slider with the assign fields.
+	 * CP entry form
+	 */
 	public function create()
 	{
-		/*
+		/* //todo: set a new folder for each sliders?
 		$folder = $this->get_folder_byname("sliders");
 
 		//Check if it already exist..
@@ -86,6 +83,11 @@ class Admin extends Admin_Controller
 		$this->streams->cp->entry_form($this->current_streamname, $this->current_namespace, 'new', NULL, TRUE, $extra);
 	}
 
+	/**
+	 * Edit the slider 
+	 * @param integer $id Slider ID
+	 * CP entry form edit
+	 */
 	public function edit($id)
 	{
 		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
@@ -97,10 +99,14 @@ class Admin extends Admin_Controller
  		$this->streams->cp->entry_form($this->current_streamname, $this->current_namespace, 'edit', $id, TRUE, $extra);
 	}
 
+	/**
+	 * Duplicate the current slider
+	 * @param type $id 
+	 * redirect
+	 */
 	public function duplicate($id)
 	{
-
-		//if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
 
 		//get the current slider by $id
 		$base_slider = (array) $this->streams->entries->get_entry($id, $this->current_streamname, $this->current_namespace, false);
@@ -135,6 +141,12 @@ class Admin extends Admin_Controller
 		redirect('admin/slider');
 	}
 
+	/**
+	 * Live - Not active yet for slider.
+	 * Put slider to live
+	 * @param integer $id 
+	 * redirect
+	 */
 	public function live($id)
 	{
 		$id = (int)$id;
@@ -154,6 +166,12 @@ class Admin extends Admin_Controller
  		redirect('admin/slider/index');
 	}
 
+	/**
+	 * Draft - Not active yet for slider.
+	 * Put slider to draft
+	 * @param type $id 
+	 * redirect
+	 */
 	public function draft($id)
 	{
 		$id = (int)$id;
@@ -173,6 +191,11 @@ class Admin extends Admin_Controller
  		redirect('admin/slider/index');
 	}
 
+	/**
+	 * Delete the slider
+	 * @param integer $id 
+	 * redirect
+	 */
 	public function delete($id)
 	{
 		$id = (int)$id;
@@ -192,6 +215,12 @@ class Admin extends Admin_Controller
  		redirect('admin/slider/index');
 	}
 
+	/**
+	 * Fields - Assign new or delete fields
+	 * @param string $action 
+	 * @param integer $field the fields id for delete and edit
+	 * redirect
+	 */
 	public function fields($action = null, $field = null)
 	{
 		if ($action == null) {
@@ -239,6 +268,10 @@ class Admin extends Admin_Controller
 		}
 	}
 
+	/**
+	 * Reorder
+	 * redirect
+	 */
 	public function reorder()
 	{
 		if ($this->input->is_ajax_request())

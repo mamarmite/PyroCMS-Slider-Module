@@ -72,10 +72,10 @@ class Plugin_Slider extends Plugin
 
 		//Add where to the desired slider id called.
 		$where = !empty($where) && isset($where) ? $where." AND slider_id =".$slider_id : " slider_id=".$slider_id;
+		
 		// Get from cache
 		if( ! $data = $this->cache->get($slides_cache_key) )
 		{
-
 			// Display a list of images
 			$params = array(
 				'stream'    => 'slides',
@@ -99,7 +99,7 @@ class Plugin_Slider extends Plugin
 			shuffle($data['entries']);
 		}
 
-		// Limit (moved to the bd called, cache use mean you must remove the cash to test the new limit)
+		// Limit (moved to the bd request, cache use module name, you must remove the cash to test the new limit)
 		/*if( count($data['entries']) > $limit )
 		{
 			$data['entries'] = array_slice($data['entries'], 0, $limit);

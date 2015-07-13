@@ -29,6 +29,13 @@ class Admin_Slides extends Admin_Controller
 		$this->load->driver('cache', array('adapter' => 'file'));
 	}
 
+	/**
+	 * Index
+	 * Show all the slides if no ID is set, show current slider slides if ID is set.
+	 * @param Integer $id 
+	 * @return none
+	 * use entries view
+	 */
 	public function index($id)
 	{
 		$where = isset($id) ? 'slider_id = '.$id : '';
@@ -45,13 +52,19 @@ class Admin_Slides extends Admin_Controller
 		);
 		$current_slider = $this->streams->entries->get_entry($id, "sliders", "sliders", false);
 		$data['entries'] = $this->streams->entries->get_entries($params);
-
+		
 		$this->template->append_css('module::sortable.css')
 					   ->append_js('module::sortable.js')
 					   ->set("title",$current_slider->slider_name)
 					   ->build('admin/entries', $data);
 	}
 
+	/**
+	 * Create
+	 * Create slide for the current slider_id.
+	 * @param integer $id 
+	 * @return none
+	 */
 	public function create($id)
 	{
 		if (empty($id)) $id = 1;
@@ -79,6 +92,14 @@ class Admin_Slides extends Admin_Controller
 		$this->streams->cp->entry_form($this->current_streamname, $this->current_namespace, 'new', null, true, $extra, $skips, $tabs, $hidden, $defaults);
 	}
 
+	/**
+	 * Edit
+	 * Edit the selected slide.
+	 * Skip the slider id
+	 * @param integer $id the slide id to edit 
+	 * @param integer $slider_id the slider ID of the slide.
+	 * cp entry form
+	 */
 	public function edit($id, $slider_id)
 	{
 		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
@@ -95,6 +116,12 @@ class Admin_Slides extends Admin_Controller
  		$this->streams->cp->entry_form($this->current_streamname, $this->current_namespace, 'edit', $id, TRUE, $extra, $skips, $tabs, $hidden, $defaults);
 	}
 
+	/**
+	 * Live
+	 * Set slides to live.
+	 * @param integer $id 
+	 * redirect
+	 */
 	public function live($id)
 	{
 		$id = (int)$id;
@@ -114,6 +141,12 @@ class Admin_Slides extends Admin_Controller
  		redirect('admin/slider/slides');
 	}
 
+	/**
+	 * draft
+	 * Set slides to draft.
+	 * @param integer $id 
+	 * redirect
+	 */
 	public function draft($id)
 	{
 		$id = (int)$id;
@@ -133,6 +166,11 @@ class Admin_Slides extends Admin_Controller
  		redirect('admin/slider/slides');
 	}
 
+	/**
+	 * delete
+	 * @param integer $id 
+	 * redirect
+	 */
 	public function delete($id)
 	{
 		$id = (int)$id;
@@ -152,6 +190,12 @@ class Admin_Slides extends Admin_Controller
  		redirect('admin/slider/slides');
 	}
 
+	/**
+	 * Assign field, add new fields view to the slide's stream.
+	 * @param string $action 'edit', 'new' or 'delete'
+	 * @param $field if delete or edit the field to edit.
+	 * redirect
+	 */
 	public function fields($action = null, $field = null)
 	{
 		if ($action == null) {
@@ -199,6 +243,9 @@ class Admin_Slides extends Admin_Controller
 		}
 	}
 
+	/**
+	 * Reorder the slides
+	 */
 	public function reorder()
 	{
 		if ($this->input->is_ajax_request())

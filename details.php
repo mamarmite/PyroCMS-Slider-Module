@@ -6,8 +6,8 @@
  * @subpackage	Slider Module
  * @author		Chris Harvey 
  * @link 		http://www.chrisnharvey.com/
- * @update 
-  *	@1.0.1		Marc-André Martin | mamarmite.com
+ * @author		Marc-André Martin
+ * @link 		http://www.mamarmite.com
   * 
  *	@todo Add filters to slide views
  * 	@todo manage to modify the shortcut of the slides view to modify the current slider id.
@@ -52,19 +52,29 @@ class Module_Slider extends Module
 					 	   'name' => 'slider:shortcuts:create',
 						   'uri' => 'admin/slider/create',
 						   'class' => 'add'
+						),
+						2 => array(
+							'name' => 'slider:shortcuts:fields',
+							'uri' => 'admin/slider/fields',
+							'class' => 'add'
 						)
 					)
 				),
 				'slides'	=> array(
 					'name'	=> 'slider:sections:all_slides',
-					'uri'	=> 'admin/slider/slides'/*,
+					'uri'	=> 'admin/slider/slides',
 					'shortcuts' => array(
+						1 => array(
+							'name' => 'slider:shortcuts:fields',
+							'uri' => 'admin/slider/slides/fields',
+							'class' => 'add'
+						)/*,
 						1 => array(
 					 	   'name' => 'slider:slide:shortcuts:create',
 						   'uri' => 'admin/slider/slides/create',
 						   'class' => 'add'
-						),
-					)*/
+						),*/
+					)
 				)
 			),
 		);

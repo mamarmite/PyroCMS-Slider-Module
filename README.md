@@ -1,9 +1,9 @@
 PyroCMS-Slider-Module
 =====================
 
-1.Add multiple sliders to your PyroCMS site using this simple streams-based module.
-2.Order your slides and add content to them: title, description, link.
-3.Added the functionality to duplicate a slider, getting all its slides with it.
+1. Add multiple sliders to your PyroCMS site using this simple streams-based module.
+2. Order your slides and add content to them: title, description, link.
+3. Added the functionality to duplicate a slider, getting all its slides with it.
 
 # Warnings
 * This is kind of lazy, no update code. Fresh install tested only. Sorry for that.

@@ -195,7 +195,7 @@ class Module_Slider extends Module
 				'name'          => 'Link',
 				'slug'          => 'slide_link',
 				'namespace'     => $this->module_slides_namespace,
-				'type'          => 'internal_url',
+				'type'          => 'url',
 				'assign'        => $this->module_slides_streamname,
 				'required'      => FALSE
 			),
@@ -203,7 +203,7 @@ class Module_Slider extends Module
 				'name'          => 'Image',
 				'slug'          => 'slide_image',
 				'namespace'     => $this->module_slides_namespace,
-				'type'          => 'imagebrowser',
+				'type'          => 'image',
 				'extra'			=> array(
 					'folder'		=> $folder['data']['folder'][0]->id,
 					'allowed_types'	=> $this->config->item('image_extensions')

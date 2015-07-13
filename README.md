@@ -9,8 +9,10 @@ PyroCMS-Slider-Module
 * This is kind of lazy, no update code. Fresh install tested only. Sorry for that.
 
 # Todo
-* Make the views to add/assign fields to the sliders and slides streams.
-* Add a field type to add the ability to assign a slider into another streams.
-* Put more love to the slides view.
-* Shortcut to add slide into a slider.
-* Shortcut to add slide and then assign it to a slider.
+### [<i>n</i>] are priorities.
+* Add permissions layers to all actions [1]
+* Make the views to add/assign fields to the sliders and slides streams. [2]
+* Add a field type to add the ability to assign a slider into another streams. [2]
+* Put more love to the slides view. [2]
+* Shortcut to add slide into a slider. [2]
+* Shortcut to add slide and then assign it to a slider. [2]

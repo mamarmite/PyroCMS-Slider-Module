@@ -1,8 +1,19 @@
-.images { list-style-type: none; margin: 0; padding: 0; }
-.images div { background-color: white; margin: 3px 3px 3px 0; padding: 3px; border: 1px solid #CCCCCC; float: left; width: 200px; height: auto; text-align: center; }
-.images div img { margin-bottom: 5px; }
+.images { list-style-type: none; margin: 0; padding: 0; overflow: hidden; }
 
-.images div.clear { background-color: transparent; margin: 0 3px 4px 0; padding: 0; border: 0; float: none; width: auto; height: auto; }
+.images .slider_image { display:block; background-color: white; margin: 0 3px 3px 0; padding: 3px; border: 1px solid #CCCCCC; float: left; width: 24%; height: 200px; text-align: center; overflow: hidden; }
+.images .images-placeholder {
+	display: block;
+	float: left;
+	background-color: #ACACAC;
+	border: 1px dashed #C0C0C0;
+	border-top: 3px dashed #909090;
+	width: 200px;
+	height: 50px;
+}
+.images .slider_image .thumbnail { display: block; width: 200px; height: auto; overflow: hidden; text-align: center; }
+.images .slider_image img { margin-bottom: 5px; display: block; width: 200px; height: auto; }
 
-.images .slider_image { position: relative; padding-bottom: 40px; cursor: move; height: auto; }
-.images .slider_image span .buttons { position: absolute; bottom: 0px; padding: 5px 0px; margin: 0px; border: none; }
+.images .slider_image.clear { background-color: transparent; margin: 0 3px 4px 0; padding: 0; border: 0; float: none; width: auto; height: auto; }
+
+.images .slider_image { display: block; position: relative; padding-bottom: 40px; cursor: move; overflow: hidden; }
+.images .slider_image span .buttons { position: absolute; bottom: 0px; padding: 5px 0px; margin: 0px; border: none; text-align: center; }

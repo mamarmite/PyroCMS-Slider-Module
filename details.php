@@ -47,48 +47,48 @@ class Module_Slider extends Module
 				'sliders'	=> array(
 					'name'	=> 'slider:sections:sliders',
 					'uri'	=> 'admin/slider',
-					'shortcuts' => array(
-						1 => array(
-					 	   'name' => 'slider:shortcuts:create',
-						   'uri' => 'admin/slider/create',
-						   'class' => 'add'
-						),
-						2 => array(
-							'name' => 'slider:shortcuts:fields',
-							'uri' => 'admin/slider/fields',
-							'class' => 'add'
-						)
-					)
+					'shortcuts' => array()
 				),
 				'slides'	=> array(
 					'name'	=> 'slider:sections:all_slides',
 					'uri'	=> 'admin/slider/slides',
-					'shortcuts' => array(
-						1 => array(
-							'name' => 'slider:shortcuts:fields',
-							'uri' => 'admin/slider/slides/fields',
-							'class' => 'add'
-						)/*,
-						1 => array(
-					 	   'name' => 'slider:slide:shortcuts:create',
-						   'uri' => 'admin/slider/slides/create',
-						   'class' => 'add'
-						),*/
-					)
+					'shortcuts' => array()
 				)
 			),
+			'roles' => array('slider_delete', 'slider_add', 'slider_fields', 'slide_add', 'slide_delete', 'slide_fields')
 		);
-
-		if (group_has_role('slider', 'fields')) {
-			$info['sections']['images']['shortcuts'][0] = array(
-				'name' => 'slider:shortcuts:fields',
-				'uri' => 'admin/slider/fields'
+		
+		if (group_has_role('slider', 'slider_add')) {
+			$info['sections']['sliders']['shortcuts'][0] = array(
+				'name' => 'slider:shortcuts:create',
+				'uri' => 'admin/slider/create',
+				'class' => 'add'
 			);
 
-			ksort($info['sections']['images']['shortcuts']);
+			ksort($info['sections']['slides']['shortcuts']);
+		}
+
+		if (group_has_role('slider', 'slider_fields')) {
+			$info['sections']['sliders']['shortcuts'][0] = array(
+				'name' => 'slider:shortcuts:fields',
+				'uri' => 'admin/slider/fields',
+				'class' => 'add'
+			);
+
+			ksort($info['sections']['slides']['shortcuts']);
+		}
+
+		if (group_has_role('slider', 'slide_fields')) {
+			$info['sections']['slides']['shortcuts'][0] = array(
+				'name' => 'slider:shortcuts:fields',
+				'uri' => 'admin/slider/fields',
+				'class' => 'add'
+			);
+
+			ksort($info['sections']['slides']['shortcuts']);
 		}
 		
-		if ($this->uri->segment(3) == 'fields') {
+		/*if ($this->uri->segment(3) == 'fields') {
 			$info['sections']['images']['shortcuts'] = array(
 				array(
 					'name'  => 'slider:shortcuts:add_field',
@@ -96,7 +96,7 @@ class Module_Slider extends Module
 					'class' => 'add'
 				)
 			);
-		}
+		}*/
 
 		return $info;
 	}
@@ -205,7 +205,7 @@ class Module_Slider extends Module
 				'name'          => 'Link',
 				'slug'          => 'slide_link',
 				'namespace'     => $this->module_slides_namespace,
-				'type'          => 'url',
+				'type'          => 'internal_url',
 				'assign'        => $this->module_slides_streamname,
 				'required'      => FALSE
 			),
@@ -213,7 +213,7 @@ class Module_Slider extends Module
 				'name'          => 'Image',
 				'slug'          => 'slide_image',
 				'namespace'     => $this->module_slides_namespace,
-				'type'          => 'image',
+				'type'          => 'imagebrowser',
 				'extra'			=> array(
 					'folder'		=> $folder['data']['folder'][0]->id,
 					'allowed_types'	=> $this->config->item('image_extensions')

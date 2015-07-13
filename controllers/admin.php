@@ -30,6 +30,9 @@ class Admin extends Admin_Controller
 
 		// Load the cache
 		$this->load->driver('cache', array('adapter' => 'file'));
+
+		//load the user's helper
+		$this->load->helper("user");
 	}
 
 	/**
@@ -39,17 +42,29 @@ class Admin extends Admin_Controller
 	 */
 	public function index()
 	{
+		$buttons = array(array('label' => lang('global:edit'),'url' => 'admin/slider/edit/-entry_id-'),
+						array('label' => lang('slider:buttons:edit_image'),'url' => 'admin/slider/slides/index/-entry_id-'));
+		
+		if (group_has_role('slider', 'slider_delete'))
+		{
+			array_push($buttons, array('label' => lang('global:delete'),'url' => 'admin/slider/delete/-entry_id-', 'confirm'=>true));
+		}
+		if (group_has_role('slider', 'slider_add'))
+		{
+			array_push($buttons, array('label' => lang('slider:buttons:duplicate'),'url' => 'admin/slider/duplicate/-entry_id-'));
+		}
+		if (group_has_role('slider', 'slide_add'))
+		{
+			array_push($buttons, array('label' => lang('slider:buttons:add_image'),'url' => 'admin/slider/slides/create/-entry_id-'));
+		}
+
 		$extra = array(
 			'return'			=> 'admin/slider',
 			'success_message'	=> lang('slider:create:success'),
 			'failure_message'	=> lang('slider:create:fail'),
 			'title'				=> lang('slider:sections:sliders:title'),
 			'columns' 			=> array('id', 'slider_status', 'slider_slug','slider_language'),
-			'buttons'			=> array(array('label' => lang('global:edit'),'url' => 'admin/slider/edit/-entry_id-'),
-										array('label' => lang('global:delete'),'url' => 'admin/slider/delete/-entry_id-', 'confirm'=>true),
-										array('label' => lang('slider:buttons:add_image'),'url' => 'admin/slider/slides/create/-entry_id-'),
-										array('label' => lang('slider:buttons:edit_image'),'url' => 'admin/slider/slides/index/-entry_id-'),
-										array('label' => lang('slider:buttons:duplicate'),'url' => 'admin/slider/duplicate/-entry_id-'))
+			'buttons'			=> $buttons
 		);
 
 		$this->streams->cp->entries_table($this->current_streamname, $this->current_namespace, 20, "page/", true, $extra);
@@ -61,6 +76,7 @@ class Admin extends Admin_Controller
 	 */
 	public function create()
 	{
+		role_or_die("slider", "slider_add", 'admin/slider', lang("slider:role:add:failed"));
 		/* //todo: set a new folder for each sliders?
 		$folder = $this->get_folder_byname("sliders");
 
@@ -106,6 +122,7 @@ class Admin extends Admin_Controller
 	 */
 	public function duplicate($id)
 	{
+		role_or_die("slider", "slider_add", 'admin/slider', lang("slider:role:duplicate:failed"));
 		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
 
 		//get the current slider by $id
@@ -198,6 +215,7 @@ class Admin extends Admin_Controller
 	 */
 	public function delete($id)
 	{
+		role_or_die("slider", "slider_delete", 'admin/slider', lang("slider:role:delete:failed"));
 		$id = (int)$id;
 
  		$delete = $this->db->delete($this->current_streamname, array('id' => $id));
@@ -223,6 +241,7 @@ class Admin extends Admin_Controller
 	 */
 	public function fields($action = null, $field = null)
 	{
+		role_or_die("slider", "slider_fields", 'admin/slider', lang("slider:role:fields:failed"));
 		if ($action == null) {
 
 			$this->streams->cp->assignments_table($this->current_namespace, $this->current_namespace, null, null, true, array(

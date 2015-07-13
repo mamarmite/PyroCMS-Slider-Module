@@ -27,6 +27,9 @@ class Admin_Slides extends Admin_Controller
 
 		// Load the cache
 		$this->load->driver('cache', array('adapter' => 'file'));
+
+		//load the user's helper
+		$this->load->helper("user");
 	}
 
 	/**
@@ -68,6 +71,7 @@ class Admin_Slides extends Admin_Controller
 	public function create($id)
 	{
 		if (empty($id)) $id = 1;
+		role_or_die("slider", "slide_add", 'admin/slider/slides/index/'.$id, lang("slider:role:add:failed"));
 		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
 
 		$params = array(
@@ -171,10 +175,12 @@ class Admin_Slides extends Admin_Controller
 	 * @param integer $id 
 	 * redirect
 	 */
-	public function delete($id)
+	public function delete($id, $slider_id)
 	{
 		$id = (int)$id;
+		$return = isset($slider_id) ? $slider_id : "";
 
+		role_or_die("slider", "slide_delete", 'admin/slider/slides/index/'.$return, lang("slider:role:slide:delete:failed"));
  		$delete = $this->db->delete($this->current_streamname, array('id' => $id));
 
  		if ($delete)
@@ -198,6 +204,7 @@ class Admin_Slides extends Admin_Controller
 	 */
 	public function fields($action = null, $field = null)
 	{
+		role_or_die("slider", "slide_fields", 'admin/slider/slides/index/'.$return, lang("slider:role:slide:fields:failed"));
 		if ($action == null) {
 
 			$this->streams->cp->assignments_table($this->current_namespace, $this->current_namespace, null, null, true, array(

@@ -23,9 +23,11 @@
 						<a class="btn blue" href="<?php echo site_url('admin/slider/slides/edit/'.$entry['id']."/".$entry['slider_id']); ?>">
 							<span><?php echo lang("slider:buttons:edit"); ?></span>
 						</a><br/>
+						<?php if (group_has_role('slider', 'slide_delete')) { ?>
 						<a class="btn red confirm" href="<?php echo site_url('admin/slider/slides/delete/'.$entry['id']); ?>">
 							<span><?php echo lang("slider:buttons:delete"); ?></span>
 						</a>
+						<?php } ?>
 					</div>
 				</div>
 			<?php endforeach; ?>

@@ -9,4 +9,10 @@
  *
  */
 
-$lang['slider:role_fields'] = 'Éditer les champs';
+$lang['slider:role_slider_fields'] 			= 'Éditer les champs d\'un diaporama';
+$lang['slider:role_slider_delete'] 			= 'Supprimer un diaporama';
+$lang['slider:role_slider_add'] 			= 'Ajouter/dupliquer des diaporama';
+
+$lang['slider:role_slide_fields'] 			= 'Éditer les champs d\'une diapo.';
+$lang['slider:role_slide_delete'] 			= 'Supprimer une diapo';
+$lang['slider:role_slide_add'] 				= 'Ajouter des diapos';

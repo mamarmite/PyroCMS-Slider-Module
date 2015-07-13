@@ -11,10 +11,8 @@ PyroCMS-Slider-Module
 
 # Todo
 ### [<i>n</i>] are priorities.
-* Add permissions layers to all actions [1]
 * Add filters to all slides view [1]
-* Add create slider from file folder feature [1]
-* Add a field type to add the ability to assign a slider into another streams. [2]
+* Add a "slider" field-type to to assign a slider into another streams. [2]
 * Put more love to the slides view. [2]
 * Shortcut to add slide into a slider. [2]
 * Shortcut to add slide and then assign it to a slider. [2]

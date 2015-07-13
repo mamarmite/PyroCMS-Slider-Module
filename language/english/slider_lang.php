@@ -37,6 +37,16 @@ $lang['slider:label:none'] 					= 'There are currently no slider sets';
 $lang['slider:create:success'] 				= 'Your slider image was added successfully.';
 $lang['slider:create:fail'] 				= 'There was an error adding your image.';
 
+/* ROLE */
+$lang['slider:role:add:failed']				= "You don't have the rights to add new slider.";
+$lang['slider:role:duplicate:failed']		= "You don't have the rights to duplicate slider.";
+$lang['slider:role:delete:failed']			= "You don't have the rights to delete slider.";
+$lang['slider:role:fields:failed']			= "You don't have the rights to edits slider's fields.";
+
+$lang['slider:role:slide:add:failed']		= "You don't have the rights to add new slide.";
+$lang['slider:role:slide:duplicate:failed']	= "You don't have the rights to duplicate slide.";
+$lang['slider:role:slide:delete:failed']	= "You don't have the rights to delete slide.";
+$lang['slider:role:slide:fields:failed']	= "You don't have the rights to edits slide's fields.";
 
 /* SLIDES */
 

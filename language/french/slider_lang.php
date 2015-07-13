@@ -41,6 +41,17 @@ $lang['slider:duplicate:success'] 				= 'Le diaporama a été dupliqué!.';
 $lang['slider:duplicate:fail'] 					= 'Une erreur est survenue pendant la duplication du diaporama.';
 
 
+/* ROLE */
+$lang['slider:role:add:failed']					= "Vous n'avez pas les droits pour ajouter de nouveau diaporama.";
+$lang['slider:role:duplicate:failed']			= "Vous n'avez pas les droits pour dupliquer des diaporamas.";
+$lang['slider:role:delete:failed']				= "Vous n'avez pas les droits pour supprimer des diaporamas.";
+$lang['slider:role:fields:failed']				= "Vous n'avez pas les droits pour éditer les champs des diaporamas.";
+
+$lang['slider:role:slide:add:failed']			= "Vous n'avez pas les droits pour ajouter de nouveau diapo.";
+$lang['slider:role:slide:duplicate:failed']		= "Vous n'avez pas les droits pour dupliquer des diapos.";
+$lang['slider:role:slide:delete:failed']		= "Vous n'avez pas les droits pour supprimer des diapos.";
+$lang['slider:role:slide:fields:failed']		= "Vous n'avez pas les droits pour éditer les champs des diapo.";
+
 /* SLIDES */
 
 $lang['slider:slide:shortcuts:create']    		= 'Ajouter une image';

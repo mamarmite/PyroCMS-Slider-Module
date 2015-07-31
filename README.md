@@ -8,8 +8,17 @@ PyroCMS-Slider-Module
 5. Sync slider from already uploaded files in a folder (need the Samul Goodwin's files_folders field type)
 6. Assign slider to another stream with the Slider Field type base on (or more inspired) the Samul Goodwin's files_folders field type.
 
+## Installation
+* Install the [File Folder](https://github.com/sgoodwin10/PyroStreams-File-Folders) from @sgoodwin10 (see [pyrocms doc](http://docs.pyrocms.com/2.2/manual/guides/addons/field_types) to know how to install a field type)
+* Move the slider module to your prefered addons path
+* Install the module from pyrocms's admin panel.
+
+## Updates from 1.0.0
+### Warnings
+* This is kind of lazy, update from 1.0.0 will not save your current slider and slides data. Fresh install tested only. Sorry for that.
+
 # Plugin
-#### Default slider id is 1.
+##### Default slider id is 1.
 ```
 {{ slider:images }}
 <div>
@@ -22,7 +31,7 @@ PyroCMS-Slider-Module
 {{ /slider:images }}
 ```
 
-## Other attributes 
+### Other attributes 
 * `id` 		`Integer`
 * `slug` 	`String`
 * `where` 	`String`
@@ -37,7 +46,7 @@ PyroCMS-Slider-Module
 ```
 
 # Todo
-### [<i>n</i>] are priorities.
+##### [<i>n</i>] are priorities.
 - [ ] Add filters to all slides view [2]
 - [ ] Put more love to the slides view. [3]
 - [x] Add a slider field types to be able to link slider to pages or other streams. [2]
@@ -49,14 +58,10 @@ PyroCMS-Slider-Module
 - [ ] Make slider view. [?]
 - [ ] Add settings section with js slider "drivers": begin with Open Source Sliders: Owl, Flexslider, Nivo, etc. [?]
 
-## Versions
-
+# Versions
 * 1.0.1 - Added a new field to the slider stream to impletement the sync with folder feature
 * 1.0.2 - 1.0.3 : Set the new field to not required.
 * 1.0.4
 	* Field type Slider added to the branch (but need to be install in the field_types folder of you shared_addons)
 	* Fixed cache problem between admin and plugin.
 	* Fixed Draft / Live function of slides (broke by the changes of field names).
-
-# Warnings
-* This is kind of lazy, update from 1.0.0 will not save your current slider and slides data. Fresh install tested only. Sorry for that.

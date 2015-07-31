@@ -12,7 +12,7 @@
 					<h2><?php echo $entry['slider_slug']; ?></h2>
 					<div class="clear"><?php echo $entry['slider_name']; ?></div>
 					<div class="buttons">
-						<?php if ($entry['status']['key'] == 'live'): ?>
+						<?php if ($entry['slide_status']['key'] == 'live'): ?>
 							<a class="btn green confirm" title="Are you sure you want to set this image to draft? It will no longer appear on the site!" href="<?php echo site_url('admin/slider/draft/'.$entry['id']); ?>">
 								<span>Live</span>
 							</a>

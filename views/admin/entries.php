@@ -9,20 +9,20 @@
 			<?php foreach ($entries['entries'] as $entry): ?>
 				<div class="slider_image" id="<?php echo $entry['id']; ?>">
 					<div class="thumbnail clear"><img src="<?php echo site_url('files/thumb/'.$entry['slide_image']['id'].'/200'); ?>" style="display:block;" /></div>
-					<div class="clear"><?php echo $entry['title']; ?></div>
+					<div class="clear"><?php echo $entry['slide_title']; ?></div>
 					<div class="buttons clear">
-						<?php if ($entry['status']['key'] == 'live'): ?>
-							<a class="btn green confirm" title="<?php echo lang("slider:slide:set_draft"); ?>" href="<?php echo site_url('admin/slider/slides/draft/'.$entry['id']); ?>">
+						<?php if ($entry['slide_status']["key"] == 'draft') { ?>
+							<a class="btn green confirm" title="<?php echo lang("slider:slide:set_live"); ?>" href="<?php echo site_url('admin/slider/slides/live/'.$entry['id']."/".$entry['slider_id']); ?>">
 								<span><?php echo lang("slider:buttons:live"); ?></span>
 							</a>
-						<?php else: ?>
-							<a class="btn orange confirm" title="<?php echo lang("slider:slide:set_live"); ?>" href="<?php echo site_url('admin/slider/slides/live/'.$entry['id']); ?>">
+						<?php } else { ?>
+							<a class="btn orange confirm" title="<?php echo lang("slider:slide:set_draft"); ?>" href="<?php echo site_url('admin/slider/slides/draft/'.$entry['id']."/".$entry['slider_id']); ?>">
 								<span><?php echo lang("slider:buttons:draft"); ?></span>
 							</a>
-						<?php endif; ?>
+						<?php } ?>
 						<a class="btn blue" href="<?php echo site_url('admin/slider/slides/edit/'.$entry['id']."/".$entry['slider_id']); ?>">
 							<span><?php echo lang("slider:buttons:edit"); ?></span>
-						</a><br/>
+						</a>
 						<?php if (group_has_role('slider', 'slide_delete')) { ?>
 						<a class="btn red confirm" href="<?php echo site_url('admin/slider/slides/delete/'.$entry['id']); ?>">
 							<span><?php echo lang("slider:buttons:delete"); ?></span>

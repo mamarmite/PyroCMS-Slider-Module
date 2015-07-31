@@ -41,14 +41,14 @@ class Plugin_Slider extends Plugin
 		$random    	= (bool)$this->attribute('random', FALSE);
 		$id			= (int)$this->attribute('id', 1);//1 is the home
 		$slug		= (string)$this->attribute('slug', NULL);
-		$slider_cache_key 	= md5(BASE_URL . 'slider');
 		
+		$slider_cache_key 	= !empty($id) && isset($id) ? md5(BASE_URL . 'slider/'.$id) : null;
 
 		//define the where statement to get the appropriate slider from slug or id. //todo get the current prefix_ of the installation..
 		$slider_where = !empty($slug) && isset($slug) ? " slider_slug='".$slug."'" : " default_sliders.id = ".$id;
 
 		// Get the called Slider from cache
-		if( ! $slider = $this->cache->get($slider_cache_key) )
+		if( ! $slider_cache_key || ! $slider = $this->cache->get($slider_cache_key) )
 		{
 			$params = array(
 				'stream'    => 'sliders',
@@ -63,7 +63,6 @@ class Plugin_Slider extends Plugin
 
 			// Cache
 			$this->cache->save($slider_cache_key, $slider, 67400);
-			
 		}
 		$slider_id = $slider['entries'][0]["id"];
 		
@@ -71,7 +70,7 @@ class Plugin_Slider extends Plugin
 		$slides_cache_key 	= md5(BASE_URL . 'slider/slides/'.$slider_id);
 
 		//Add where to the desired slider id called.
-		$where = !empty($where) && isset($where) ? $where." AND slider_id =".$slider_id : " slider_id=".$slider_id;
+		$slides_where = !empty($where) && isset($where) ? $where." AND slider_id =".$slider_id : " slider_id=".$slider_id;
 		
 		// Get from cache
 		if( ! $data = $this->cache->get($slides_cache_key) )
@@ -83,7 +82,7 @@ class Plugin_Slider extends Plugin
 				'order_by'  => 'ordering_count',
 				'sort'	    => 'asc',
 				'limit'		=> $limit,
-				'where'     => "slide_status = 'live' AND ".$where
+				'where'     => "slide_status = 'live' AND ".$slides_where
 			);
 
 			// Get results			

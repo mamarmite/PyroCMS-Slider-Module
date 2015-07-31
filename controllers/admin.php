@@ -25,6 +25,9 @@ class Admin extends Admin_Controller
 		// Load the streams driver
 		$this->load->driver('Streams');
 
+		// Load the files library
+		$this->load->library(array('files/files'));
+
 		// Load the language file
 		$this->lang->load('slider');
 
@@ -87,16 +90,21 @@ class Admin extends Admin_Controller
 			$folder = Files::create_folder(0, 'sliders');
 		}
 		*/
-		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
-
+		//if 
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . "slider/".$id));
+		//add ignore the from folder.
 		$extra = array(
 			'return'			=> 'admin/slider',
 			'success_message'	=> lang('slider:create:success'),
 			'failure_message'	=> lang('slider:create:fail'),
 			'title'				=> lang('slider:create:title')
 		);
+		$skips = null;
+		$tabs = false;
+		$hidden = array("from_folder");//hide from_folder field to be available only when we know the current slider id (in edit for now).
+		$defaults = null;
 
-		$this->streams->cp->entry_form($this->current_streamname, $this->current_namespace, 'new', NULL, TRUE, $extra);
+		$this->streams->cp->entry_form($this->current_streamname, $this->current_namespace, 'new', NULL, TRUE, $extra, $skips, $tabs, $hidden, $defaults);
 	}
 
 	/**
@@ -106,7 +114,15 @@ class Admin extends Admin_Controller
 	 */
 	public function edit($id)
 	{
-		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
+		if ($this->input->post())
+		{
+			$this->cache->delete(md5(BASE_URL . "slider/".$id));
+
+			if ($this->input->post("from_folder"))
+			{
+				$this->sync_with_folder($id, $this->input->post("from_folder"));
+			}
+		}
 
 		$extra = array(
  			'return' => 'admin/slider'
@@ -117,13 +133,13 @@ class Admin extends Admin_Controller
 
 	/**
 	 * Duplicate the current slider
-	 * @param type $id 
+	 * @param integer $id 
 	 * redirect
 	 */
 	public function duplicate($id)
 	{
 		role_or_die("slider", "slider_add", 'admin/slider', lang("slider:role:duplicate:failed"));
-		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . "slider/".$id));
 
 		//get the current slider by $id
 		$base_slider = (array) $this->streams->entries->get_entry($id, $this->current_streamname, $this->current_namespace, false);
@@ -159,6 +175,45 @@ class Admin extends Admin_Controller
 	}
 
 	/**
+	 * Sync the current created slide to an already existing folder.
+	 * @param integer $id 
+	 * @param integer $folder_id 
+	 * @redirect
+	 */
+	public function sync_with_folder($id, $folder_id)
+	{
+		role_or_die("slider", "slide_add", 'admin/slider/slides/index/'.$id, lang("slider:role:add:failed"));
+		$return = true;
+		//get all the contained images and metas.
+		//delete all current slides and add all files with alt + description and leave empty other.
+		//make a button: sync images (+n, -n);
+		//yeah.
+
+		//get the current slider by $id
+		$base_slider = (array) $this->streams->entries->get_entry($id, $this->current_streamname, $this->current_namespace, false);
+
+
+		//Check if it already exist..
+		if ($from_folder_contents = Files::folder_contents($folder_id))
+		{
+			$new_slide = array();
+			foreach ($from_folder_contents['data']['file'] as $k => $file)
+			{
+				//$file_has_moved = Files::move($file->id, $file->name);
+				$new_slide = array(
+					"slider_id" => $id,
+					"slide_title" => $file->alt_attribute,
+					"slide_desc"=> $file->description,
+					"slide_image"=>$file->id,
+					"slide_link"=>"");
+				$slide_has_added = $this->streams->entries->insert_entry($new_slide, "slides", "slides");
+				$return = !$return ? $return : $slide_has_added;// if we got one slide that didn't work, keed the return to false;
+			}
+		}
+		return $return;
+	}
+
+	/**
 	 * Live - Not active yet for slider.
 	 * Put slider to live
 	 * @param integer $id 
@@ -168,11 +223,11 @@ class Admin extends Admin_Controller
 	{
 		$id = (int)$id;
 
-		$update = $this->db->update($this->current_namespace, array('status' => 'live'), array('id' => $id));
+		$update = $this->db->update($this->current_namespace, array('slider_status' => 'live'), array('id' => $id));
 
  		if ($update)
  		{
- 			$this->cache->delete(md5(BASE_URL . $this->modulename));
+ 			$this->cache->delete(md5(BASE_URL . "slider/".$id));
  			$this->session->set_flashdata('success', 'Image successfully set to live');
  		}
  		else
@@ -193,11 +248,11 @@ class Admin extends Admin_Controller
 	{
 		$id = (int)$id;
 
-		$update = $this->db->update($this->current_streamname, array('status' => 'draft'), array('id' => $id));
+		$update = $this->db->update($this->current_streamname, array('slider_status' => 'draft'), array('id' => $id));
 
  		if ($update)
  		{
- 			$this->cache->delete(md5(BASE_URL . $this->modulename));
+ 			$this->cache->delete(md5(BASE_URL . "slider/".$id));
  			$this->session->set_flashdata('success', 'Image successfully set to draft');
  		}
  		else
@@ -222,7 +277,7 @@ class Admin extends Admin_Controller
 
  		if ($delete)
  		{
- 			$this->cache->delete(md5(BASE_URL . $this->modulename));
+ 			$this->cache->delete(md5(BASE_URL . "slider/".$id));
  			$this->session->set_flashdata('success', 'Image deleted successfully');
  		}
  		else

@@ -14,7 +14,7 @@
  */
 class Module_Slider extends Module
 {
-	public $version = '1.0.1';
+	public $version = '1.0.4';
 	public $module_namespace = "sliders";
 	public $module_streamname = "sliders";
 	public $module_slides_streamname = "slides";
@@ -58,34 +58,31 @@ class Module_Slider extends Module
 			'roles' => array('slider_delete', 'slider_add', 'slider_fields', 'slide_add', 'slide_delete', 'slide_fields')
 		);
 		
+		//user can add slider?
 		if (group_has_role('slider', 'slider_add')) {
-			$info['sections']['sliders']['shortcuts'][0] = array(
+			array_push($info['sections']['sliders']['shortcuts'], array(
 				'name' => 'slider:shortcuts:create',
 				'uri' => 'admin/slider/create',
 				'class' => 'add'
-			);
-
-			ksort($info['sections']['slides']['shortcuts']);
+			));
 		}
 
+		//user can edit slider's field?
 		if (group_has_role('slider', 'slider_fields')) {
-			$info['sections']['sliders']['shortcuts'][0] = array(
+			array_push($info['sections']['sliders']['shortcuts'], array(
 				'name' => 'slider:shortcuts:fields',
 				'uri' => 'admin/slider/fields',
 				'class' => 'add'
-			);
-
-			ksort($info['sections']['slides']['shortcuts']);
+			));
 		}
 
+		//user can edit slide's field?
 		if (group_has_role('slider', 'slide_fields')) {
-			$info['sections']['slides']['shortcuts'][0] = array(
+			array_push($info['sections']['slides']['shortcuts'], array(
 				'name' => 'slider:shortcuts:fields',
 				'uri' => 'admin/slider/slides/fields',
 				'class' => 'add'
-			);
-
-			ksort($info['sections']['slides']['shortcuts']);
+			));
 		}
 		
 		if ($this->uri->segment(3) == 'fields') {
@@ -265,14 +262,41 @@ class Module_Slider extends Module
 		switch ($old_version)
 		{
 			case "1.0":
-			default:
 			 	//in 1.0.1 we have created 2 new streams with a different name.
 				//todo: migration from slider streams to id 1 0 slider in 1.0.1
 			 	$this->streams->utilities->remove_namespace("slider");
 			break;
+			case "1.0.1":
+				$this->streams->fields->add_fields(array(array(
+					'name'          => 'From Existing Folder',
+					'slug'          => 'from_folder',
+					'namespace'     => $this->module_namespace,
+					'type'          => 'file_folders',
+					'assign'        => $this->module_streamname,
+					'required'      => true
+				)));
+			break;
+			case "1.0.2":
+			case "1.0.3":
+			default:
+				//no edit field exist? so delete it and recreate it again. //update_field exist but it's commented and seem to miss some feature.
+				if ($this->streams->fields->delete_field("from_folder",$this->module_namespace))
+				{
+					$this->streams->fields->add_fields(array(array(
+						'name'          => 'From Existing Folder',
+						'slug'          => 'from_folder',
+						'namespace'     => $this->module_namespace,
+						'type'          => 'file_folders',
+						'assign'        => $this->module_streamname,
+						'required'      => false
+					)));
+				} else {
+					return false;
+				}
+			break;
 		}
 			
-		return TRUE;
+		return true;
 	}
 
 	public function help()

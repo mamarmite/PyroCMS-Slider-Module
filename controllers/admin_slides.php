@@ -72,7 +72,7 @@ class Admin_Slides extends Admin_Controller
 	{
 		if (empty($id)) $id = 1;
 		role_or_die("slider", "slide_add", 'admin/slider/slides/index/'.$id, lang("slider:role:add:failed"));
-		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . 'slider/slides/'.$slider_id));
 
 		$params = array(
 			'stream'    => "sliders",
@@ -106,7 +106,7 @@ class Admin_Slides extends Admin_Controller
 	 */
 	public function edit($id, $slider_id)
 	{
-		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . $this->modulename));
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . 'slider/slides/'.$slider_id));
 
 		$return = isset($slider_id) ? $slider_id : "";
 		$extra = array(
@@ -126,15 +126,15 @@ class Admin_Slides extends Admin_Controller
 	 * @param integer $id 
 	 * redirect
 	 */
-	public function live($id)
+	public function live($id, $slider_id)
 	{
 		$id = (int)$id;
 
-		$update = $this->db->update($this->current_namespace, array('status' => 'live'), array('id' => $id));
+		$update = $this->db->update($this->current_namespace, array('slide_status' => 'live'), array('id' => $id));
 
  		if ($update)
  		{
- 			$this->cache->delete(md5(BASE_URL . $this->modulename));
+ 			$this->cache->delete(md5(BASE_URL . 'slider/slides/'.$slider_id));
  			$this->session->set_flashdata('success', 'Image successfully set to live');
  		}
  		else
@@ -142,7 +142,7 @@ class Admin_Slides extends Admin_Controller
  			$this->session->set_flashdata('error', 'Unable to set the image to live');
  		}
 
- 		redirect('admin/slider/slides');
+ 		redirect('admin/slider/slides/index/'.$slider_id);
 	}
 
 	/**
@@ -151,15 +151,15 @@ class Admin_Slides extends Admin_Controller
 	 * @param integer $id 
 	 * redirect
 	 */
-	public function draft($id)
+	public function draft($id, $slider_id)
 	{
 		$id = (int)$id;
 
-		$update = $this->db->update($this->current_streamname, array('status' => 'draft'), array('id' => $id));
+		$update = $this->db->update($this->current_streamname, array('slide_status' => 'draft'), array('id' => $id));
 
  		if ($update)
  		{
- 			$this->cache->delete(md5(BASE_URL . $this->modulename));
+ 			$this->cache->delete(md5(BASE_URL . 'slider/slides/'.$slider_id));
  			$this->session->set_flashdata('success', 'Image successfully set to draft');
  		}
  		else
@@ -167,7 +167,7 @@ class Admin_Slides extends Admin_Controller
  			$this->session->set_flashdata('error', 'Unable to set the image to draft');
  		}
 
- 		redirect('admin/slider/slides');
+ 		redirect('admin/slider/slides/index/'.$slider_id);
 	}
 
 	/**
@@ -185,7 +185,7 @@ class Admin_Slides extends Admin_Controller
 
  		if ($delete)
  		{
- 			$this->cache->delete(md5(BASE_URL . $this->modulename));
+ 			$this->cache->delete(md5(BASE_URL . 'slider/slides/'.$slider_id));
  			$this->session->set_flashdata('success', 'Image deleted successfully');
  		}
  		else
@@ -193,7 +193,7 @@ class Admin_Slides extends Admin_Controller
  			$this->session->set_flashdata('error', 'Unable to delete image');
  		}
 
- 		redirect('admin/slider/slides');
+ 		redirect('admin/slider/slides/index/'.$slider_id);
 	}
 
 	/**

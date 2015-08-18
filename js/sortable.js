@@ -2,6 +2,7 @@ $(function()
 {
 	$(".images").sortable({
 		cursor: 'move',
+		placeholder: "images-placeholder",
 		stop: function(event, ui) {
 			var order = '';
 
@@ -28,6 +29,6 @@ $(function()
 		return this.height( Math.max.apply(this, $.map( this , function(e){ return $(e).height() }) ) );
 	}
 	// usage: $(‘div.unevenheights’).setAllToMaxHeight()
-	$('.slider_image').setAllToMaxHeight();
+	//$('.slider_image').setAllToMaxHeight();
 
 });

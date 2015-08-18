@@ -6,11 +6,17 @@
  * @subpackage	Slider Module
  * @author		Chris Harvey
  * @link 		http://www.chrisnharvey.com/
+ * @author		Marc-André Martin
+ * @link 		http://www.mamarmite.com
  *
  */
 class Admin extends Admin_Controller
 {
-	public $section = 'images';
+	public $section = 'sliders';
+
+	public $modulename = "slider";
+	public $current_namespace = "sliders";
+	public $current_streamname = "sliders";
 
 	public function __construct()
 	{
@@ -19,64 +25,209 @@ class Admin extends Admin_Controller
 		// Load the streams driver
 		$this->load->driver('Streams');
 
+		// Load the files library
+		$this->load->library(array('files/files'));
+
 		// Load the language file
 		$this->lang->load('slider');
 
 		// Load the cache
 		$this->load->driver('cache', array('adapter' => 'file'));
+
+		//load the user's helper
+		$this->load->helper("user");
 	}
 
+	/**
+	 * Index
+	 * Show all the sliders active.
+	 * CP entries table
+	 */
 	public function index()
 	{
-		// Display a list of articles
-		$params = array(
-			'stream'    => 'slider',
-			'namespace' => 'slider',
-			'order_by'  => 'ordering_count',
-			'sort'      => 'asc'
+		$buttons = array(array('label' => lang('global:edit'),'url' => 'admin/slider/edit/-entry_id-'),
+						array('label' => lang('slider:buttons:edit_image'),'url' => 'admin/slider/slides/index/-entry_id-'));
+		
+		if (group_has_role('slider', 'slider_delete'))
+		{
+			array_push($buttons, array('label' => lang('global:delete'),'url' => 'admin/slider/delete/-entry_id-', 'confirm'=>true));
+		}
+		if (group_has_role('slider', 'slider_add'))
+		{
+			array_push($buttons, array('label' => lang('slider:buttons:duplicate'),'url' => 'admin/slider/duplicate/-entry_id-'));
+		}
+		if (group_has_role('slider', 'slide_add'))
+		{
+			array_push($buttons, array('label' => lang('slider:buttons:add_image'),'url' => 'admin/slider/slides/create/-entry_id-'));
+		}
+
+		$extra = array(
+			'return'			=> 'admin/slider',
+			'success_message'	=> lang('slider:create:success'),
+			'failure_message'	=> lang('slider:create:fail'),
+			'title'				=> lang('slider:sections:sliders:title'),
+			'columns' 			=> array('id', 'slider_status', 'slider_slug','slider_language'),
+			'buttons'			=> $buttons
 		);
 
-		$data['entries'] = $this->streams->entries->get_entries($params);
-
-		$this->template->append_css('module::sortable.css')
-					   ->append_js('module::sortable.js')
-					   ->build('admin/entries', $data);
+		$this->streams->cp->entries_table($this->current_streamname, $this->current_namespace, 20, "page/", true, $extra);
 	}
 
+	/**
+	 * Create a slider with the assign fields.
+	 * CP entry form
+	 */
 	public function create()
 	{
-		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . 'slider'));
+		role_or_die("slider", "slider_add", 'admin/slider', lang("slider:role:add:failed"));
+		/* //todo: set a new folder for each sliders?
+		$folder = $this->get_folder_byname("sliders");
 
+		//Check if it already exist..
+		if (!$folder["status"])
+		{
+			// Create a folder to store the slider images
+			$folder = Files::create_folder(0, 'sliders');
+		}
+		*/
+		//if 
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . "slider/".$id));
+		//add ignore the from folder.
 		$extra = array(
 			'return'			=> 'admin/slider',
 			'success_message'	=> lang('slider:create:success'),
 			'failure_message'	=> lang('slider:create:fail'),
 			'title'				=> lang('slider:create:title')
 		);
+		$skips = null;
+		$tabs = false;
+		$hidden = array("from_folder");//hide from_folder field to be available only when we know the current slider id (in edit for now).
+		$defaults = null;
 
-		$this->streams->cp->entry_form('slider', 'slider', 'new', NULL, TRUE, $extra);
+		$this->streams->cp->entry_form($this->current_streamname, $this->current_namespace, 'new', NULL, TRUE, $extra, $skips, $tabs, $hidden, $defaults);
 	}
 
+	/**
+	 * Edit the slider 
+	 * @param integer $id Slider ID
+	 * CP entry form edit
+	 */
 	public function edit($id)
 	{
-		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . 'slider'));
+		if ($this->input->post())
+		{
+			$this->cache->delete(md5(BASE_URL . "slider/".$id));
+
+			if ($this->input->post("from_folder"))
+			{
+				$this->sync_with_folder($id, $this->input->post("from_folder"));
+			}
+		}
 
 		$extra = array(
- 			'return' => site_url('admin/slider')
+ 			'return' => 'admin/slider'
  		);
 
- 		$this->streams->cp->entry_form('slider', 'slider', 'edit', $id, TRUE, $extra);
+ 		$this->streams->cp->entry_form($this->current_streamname, $this->current_namespace, 'edit', $id, TRUE, $extra);
 	}
 
+	/**
+	 * Duplicate the current slider
+	 * @param integer $id 
+	 * redirect
+	 */
+	public function duplicate($id)
+	{
+		role_or_die("slider", "slider_add", 'admin/slider', lang("slider:role:duplicate:failed"));
+		if ($this->input->post()) $this->cache->delete(md5(BASE_URL . "slider/".$id));
+
+		//get the current slider by $id
+		$base_slider = (array) $this->streams->entries->get_entry($id, $this->current_streamname, $this->current_namespace, false);
+
+		//insert_entry new sliders skipping id to be different, indeed.
+		$new_slider_id = $this->streams->entries->insert_entry($base_slider, $this->current_streamname, $this->current_namespace, array('id'));
+
+		//get the associated slides
+		$params = array(
+			'stream'    => "slides",
+			'namespace' => "slides",
+			'order_by'  => 'ordering_count',
+			'sort'      => 'asc',
+			'where'		=> 'slider_id = '.$id
+		);
+		$base_slider_slides = $this->streams->entries->get_entries($params)["entries"];
+
+		$new_slide = array();
+		//insert_entry slides to this slider.
+		foreach ($base_slider_slides as $base_slide)
+		{
+			$new_slide = array(
+					"slider_id" => $new_slider_id,
+					"slide_title" => $base_slide["slide_title"],
+					"slide_desc"=> $base_slide["slide_desc"],
+					"slide_image"=>$base_slide["slide_image"]["id"],
+					"slide_link"=>$base_slide["slide_link"]);
+			/**/
+			$this->streams->entries->insert_entry($new_slide, "slides", "slides");
+		}
+
+		redirect('admin/slider');
+	}
+
+	/**
+	 * Sync the current created slide to an already existing folder.
+	 * @param integer $id 
+	 * @param integer $folder_id 
+	 * @redirect
+	 */
+	public function sync_with_folder($id, $folder_id)
+	{
+		role_or_die("slider", "slide_add", 'admin/slider/slides/index/'.$id, lang("slider:role:add:failed"));
+		$return = true;
+		//get all the contained images and metas.
+		//delete all current slides and add all files with alt + description and leave empty other.
+		//make a button: sync images (+n, -n);
+		//yeah.
+
+		//get the current slider by $id
+		$base_slider = (array) $this->streams->entries->get_entry($id, $this->current_streamname, $this->current_namespace, false);
+
+
+		//Check if it already exist..
+		if ($from_folder_contents = Files::folder_contents($folder_id))
+		{
+			$new_slide = array();
+			foreach ($from_folder_contents['data']['file'] as $k => $file)
+			{
+				//$file_has_moved = Files::move($file->id, $file->name);
+				$new_slide = array(
+					"slider_id" => $id,
+					"slide_title" => $file->alt_attribute,
+					"slide_desc"=> $file->description,
+					"slide_image"=>$file->id,
+					"slide_link"=>"");
+				$slide_has_added = $this->streams->entries->insert_entry($new_slide, "slides", "slides");
+				$return = !$return ? $return : $slide_has_added;// if we got one slide that didn't work, keed the return to false;
+			}
+		}
+		return $return;
+	}
+
+	/**
+	 * Live - Not active yet for slider.
+	 * Put slider to live
+	 * @param integer $id 
+	 * redirect
+	 */
 	public function live($id)
 	{
 		$id = (int)$id;
 
-		$update = $this->db->update('slider', array('status' => 'live'), array('id' => $id));
+		$update = $this->db->update($this->current_namespace, array('slider_status' => 'live'), array('id' => $id));
 
  		if ($update)
  		{
- 			$this->cache->delete(md5(BASE_URL . 'slider'));
+ 			$this->cache->delete(md5(BASE_URL . "slider/".$id));
  			$this->session->set_flashdata('success', 'Image successfully set to live');
  		}
  		else
@@ -84,18 +235,24 @@ class Admin extends Admin_Controller
  			$this->session->set_flashdata('error', 'Unable to set the image to live');
  		}
 
- 		redirect('admin/slider');
+ 		redirect('admin/slider/index');
 	}
 
+	/**
+	 * Draft - Not active yet for slider.
+	 * Put slider to draft
+	 * @param type $id 
+	 * redirect
+	 */
 	public function draft($id)
 	{
 		$id = (int)$id;
 
-		$update = $this->db->update('slider', array('status' => 'draft'), array('id' => $id));
+		$update = $this->db->update($this->current_streamname, array('slider_status' => 'draft'), array('id' => $id));
 
  		if ($update)
  		{
- 			$this->cache->delete(md5(BASE_URL . 'slider'));
+ 			$this->cache->delete(md5(BASE_URL . "slider/".$id));
  			$this->session->set_flashdata('success', 'Image successfully set to draft');
  		}
  		else
@@ -103,18 +260,24 @@ class Admin extends Admin_Controller
  			$this->session->set_flashdata('error', 'Unable to set the image to draft');
  		}
 
- 		redirect('admin/slider');
+ 		redirect('admin/slider/index');
 	}
 
+	/**
+	 * Delete the slider
+	 * @param integer $id 
+	 * redirect
+	 */
 	public function delete($id)
 	{
+		role_or_die("slider", "slider_delete", 'admin/slider', lang("slider:role:delete:failed"));
 		$id = (int)$id;
 
- 		$delete = $this->db->delete('slider', array('id' => $id));
+ 		$delete = $this->db->delete($this->current_streamname, array('id' => $id));
 
  		if ($delete)
  		{
- 			$this->cache->delete(md5(BASE_URL . 'slider'));
+ 			$this->cache->delete(md5(BASE_URL . "slider/".$id));
  			$this->session->set_flashdata('success', 'Image deleted successfully');
  		}
  		else
@@ -122,14 +285,21 @@ class Admin extends Admin_Controller
  			$this->session->set_flashdata('error', 'Unable to delete image');
  		}
 
- 		redirect('admin/slider');
+ 		redirect('admin/slider/index');
 	}
 
+	/**
+	 * Fields - Assign new or delete fields
+	 * @param string $action 
+	 * @param integer $field the fields id for delete and edit
+	 * redirect
+	 */
 	public function fields($action = null, $field = null)
 	{
+		role_or_die("slider", "slider_fields", 'admin/slider', lang("slider:role:fields:failed"));
 		if ($action == null) {
 
-			$this->streams->cp->assignments_table('slider', 'slider', null, null, true, array(
+			$this->streams->cp->assignments_table($this->current_namespace, $this->current_namespace, null, null, true, array(
 				'title'   => 'Slider Fields',
 				'buttons' => array(
 					array(
@@ -146,7 +316,7 @@ class Admin extends Admin_Controller
 
 		} elseif (($action == 'edit' and $field) or $action == 'new') {
 
-			$this->streams->cp->field_form('slider', 'slider', $action, 'admin/slider/fields', $field, array(), true, array(
+			$this->streams->cp->field_form($this->current_streamname, $this->current_namespace, $action, 'admin/slider/fields', $field, array(), true, array(
 				'title'   => 'Edit Field',
 			));
 
@@ -159,7 +329,7 @@ class Admin extends Admin_Controller
 
 			if ( ! $query->num_rows()) show_404();
 
-			$this->streams->fields->delete_field($query->row()->field_slug, 'slider');
+			$this->streams->fields->delete_field($query->row()->field_slug, $this->current_streamname);
 
 			$this->session->set_flashdata('success', 'Field deleted successfully');
 
@@ -172,6 +342,10 @@ class Admin extends Admin_Controller
 		}
 	}
 
+	/**
+	 * Reorder
+	 * redirect
+	 */
 	public function reorder()
 	{
 		if ($this->input->is_ajax_request())
@@ -184,7 +358,7 @@ class Admin extends Admin_Controller
  			$i = 1;
  			foreach ($order as $id)
  			{
- 				$this->db->update('slider', array('ordering_count' => $i), array('id' => $id));
+ 				$this->db->update($this->current_streamname, array('ordering_count' => $i), array('id' => $id));
  				$i++;
  			}
 
@@ -197,7 +371,7 @@ class Admin extends Admin_Controller
  			}
  			else
  			{
- 				$this->cache->delete(md5(BASE_URL . 'slider'));
+ 				$this->cache->delete(md5(BASE_URL . $this->current_streamname));
  				set_status_header(200);
  			}
  		}
@@ -206,4 +380,27 @@ class Admin extends Admin_Controller
  			show_404();
  		}
 	}
+
+	/**
+    *  	Copied from Files:search and adapt to get all properties
+    *	In: file_folders_m->select()
+    */
+    public function get_folder_byname($name)
+    {
+        if (!isset($name)) return FALSE;
+        $results = array();
+        $this->file_folders_m->select('id, parent_id, slug, name, location, remote_container, date_added, sort');
+
+        $this->file_folders_m->like('name', $name)
+                ->or_like('location', $name)
+                ->or_like('remote_container', $name);
+
+        $results['folder'] = $this->file_folders_m->get_all();
+        
+        if ($results['folder'])
+        {
+                return Files::result(TRUE, NULL, NULL, $results);
+        }
+        return Files::result(FALSE, lang('files:no_records_found'));
+    }
 }

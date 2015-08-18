@@ -1,41 +1,40 @@
 <section class="title">
-	<h4><?php echo lang('slider:sections:images'); ?></h4>
+	<h4><?php echo lang('slider:sections:slides')." ".$title; ?></h4>
 </section>
 
-	<section class="item">
-		<?php if (isset($entries['entries']) AND ! empty($entries['entries'])): ?>
-			<div class="content images">
-				<?php $i = 1; ?>
-				<?php foreach ($entries['entries'] as $entry): ?>
-					<div class="slider_image" id="<?php echo $entry['id']; ?>">
-
-						<img src="<?php echo site_url('files/thumb/'.$entry['image']['id'].'/200'); ?>">
-						<span>
-							<div class="clear"><?php echo $entry['title']; ?></div>
-							<div class="buttons">
-								<?php if ($entry['status']['key'] == 'live'): ?>
-									<a class="btn green confirm" title="Are you sure you want to set this image to draft? It will no longer appear on the site!" href="<?php echo site_url('admin/slider/draft/'.$entry['id']); ?>">
-										<span>Live</span>
-									</a>
-								<?php else: ?>
-									<a class="btn orange confirm" title="Are you sure you want to set this image to live? It will be visible on the site!" href="<?php echo site_url('admin/slider/live/'.$entry['id']); ?>">
-										<span>Draft</span>
-									</a>
-								<?php endif; ?>
-								<a class="btn blue" href="<?php echo site_url('admin/slider/edit/'.$entry['id']); ?>">
-									<span>Edit</span>
-								</a>
-								<a class="btn red confirm" href="<?php echo site_url('admin/slider/delete/'.$entry['id']); ?>">
-									<span>Delete</span>
-								</a>
-							</div>
-						</span>
+<section class="item">
+	<?php if (isset($entries['entries']) AND ! empty($entries['entries'])): ?>
+		<div class="content images">
+			<?php $i = 1; ?>
+			<?php foreach ($entries['entries'] as $entry): ?>
+				<div class="slider_image" id="<?php echo $entry['id']; ?>">
+					<div class="thumbnail clear"><img src="<?php echo site_url('files/thumb/'.$entry['slide_image']['id'].'/200'); ?>" style="display:block;" /></div>
+					<div class="clear"><?php echo $entry['slide_title']; ?></div>
+					<div class="buttons clear">
+						<?php if ($entry['slide_status']["key"] == 'draft') { ?>
+							<a class="btn green confirm" title="<?php echo lang("slider:slide:set_live"); ?>" href="<?php echo site_url('admin/slider/slides/live/'.$entry['id']."/".$entry['slider_id']); ?>">
+								<span><?php echo lang("slider:buttons:live"); ?></span>
+							</a>
+						<?php } else { ?>
+							<a class="btn orange confirm" title="<?php echo lang("slider:slide:set_draft"); ?>" href="<?php echo site_url('admin/slider/slides/draft/'.$entry['id']."/".$entry['slider_id']); ?>">
+								<span><?php echo lang("slider:buttons:draft"); ?></span>
+							</a>
+						<?php } ?>
+						<a class="btn blue" href="<?php echo site_url('admin/slider/slides/edit/'.$entry['id']."/".$entry['slider_id']); ?>">
+							<span><?php echo lang("slider:buttons:edit"); ?></span>
+						</a>
+						<?php if (group_has_role('slider', 'slide_delete')) { ?>
+						<a class="btn red confirm" href="<?php echo site_url('admin/slider/slides/delete/'.$entry['id']); ?>">
+							<span><?php echo lang("slider:buttons:delete"); ?></span>
+						</a>
+						<?php } ?>
 					</div>
-				<?php endforeach; ?>
-			</div>
-		<?php else: ?>
-			<div class="no_data">
-				<?php echo lang('slider:label:none'); ?>
-			</div>
-		<?php endif; ?>
-	</section>
+				</div>
+			<?php endforeach; ?>
+		</div>
+	<?php else: ?>
+		<div class="no_data">
+			<?php echo lang('slider:slide:label:none'); ?>
+		</div>
+	<?php endif; ?>
+</section>
